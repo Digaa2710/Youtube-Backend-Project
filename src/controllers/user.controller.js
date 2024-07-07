@@ -135,8 +135,8 @@ const logoutUser=asyncHandler(async(req,res)=>{
   await User.findByIdAndUpdate(
    req.user._id,
    {
-      $set:{
-         refreshToken:undefined
+      $unset:{
+         refreshToken:1
       }
    },
    {
@@ -146,13 +146,14 @@ const logoutUser=asyncHandler(async(req,res)=>{
 
   const options={
    httpOnly:true,
-   secure:true
+   secure:true,
+   expires: new Date(0) 
 }
 
 return res
 .status(200)
-.cookie("accessToken",options)
-.cookie("refreshToken",options)
+.clearCookie("accessToken",options)
+.clearCookie("refreshToken",options)
 .json(
    new ApiResponse(
       200,
@@ -183,7 +184,7 @@ const refreshAccessToken=asyncHandler(async(req,res)=>{
       throw new ApiError(401,"Invalid refresh token")
    }
 
-   if(!incomingRefreshToken!==user?.refreshToken){
+   if(incomingRefreshToken!==user?.refreshToken){
       throw new ApiError(401,"Refresh taken is expired or used")
    }
 
@@ -391,4 +392,4 @@ const updateUserCoverImage=asyncHandler(async(req,res)=>{
 
 
 
-export {registerUser,loginUser,logoutUser,refreshAccessToken,changeCurrentPassword,getCurrentUser,updateAccountDetails,updateUserAvatar,updateUserCoverImage} 
+export {registerUser,loginUser,logoutUser,refreshAccessToken,changeCurrentPassword,getCurrentUser,updateAccountDetails,updateUserAvatar,updateUserCoverImage,getUserChannelProfile} 
