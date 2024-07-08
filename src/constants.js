@@ -1,1 +1,1 @@
-export const DB_NAME="videotube"
+export const DB_NAME="videotube"//this is name of DB in mongoose atlas ...check your atlas
